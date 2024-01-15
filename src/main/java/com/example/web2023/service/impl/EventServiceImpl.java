@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.web2023.mapper.ClubMapper.mapToClub;
 import static com.example.web2023.mapper.EventMapper.mapToEvent;
 import static com.example.web2023.mapper.EventMapper.mapToEventDto;
 

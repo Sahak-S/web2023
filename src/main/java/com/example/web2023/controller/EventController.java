@@ -50,6 +50,8 @@ public class EventController {
         return "events-create";
     }
 
+
+
     @GetMapping("/events/{eventId}/edit")
     public String editEventForm(@PathVariable("eventId") Long eventId, Model model) {
         EventDto event = eventService.findByEventId(eventId);
