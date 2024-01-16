@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.web2023.mapper.EventMapper.mapToEvent;
@@ -43,8 +45,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto findByEventId(Long eventId) {
-        Event event = eventRepository.findById(eventId).get();
+    public EventDto findByEventId(Long eventId)  {
+      //TODO պետք է խուսափել  get() մեթոդից
+        Event  event = eventRepository.findById(eventId).get();
         return mapToEventDto(event);
     }
 
