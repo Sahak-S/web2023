@@ -2,7 +2,10 @@ package com.example.web2023.service.impl;
 
 import com.example.web2023.dto.ClubDto;
 import com.example.web2023.model.Club;
+import com.example.web2023.model.UserEntity;
 import com.example.web2023.repository.ClubRepository;
+import com.example.web2023.repository.UserRepository;
+import com.example.web2023.security.SecurityUtil;
 import com.example.web2023.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +20,11 @@ import static com.example.web2023.mapper.ClubMapper.mapToClubDto;
 public class ClubServiceImpl implements ClubService {
 
     private ClubRepository clubRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository) {
+    public ClubServiceImpl(ClubRepository clubRepository,UserRepository userRepository) {
+        this.userRepository= userRepository;
         this.clubRepository = clubRepository;
     }
 
@@ -32,7 +37,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public Club saveClub(ClubDto clubDto) {
+        String username = SecurityUtil.getSessionUser();
+        UserEntity user = userRepository.findByUsername(username);
         Club club = mapToClub(clubDto);
+        club.setCreatedBy(user);
         return clubRepository.save(club);
     }
 
@@ -44,7 +52,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public void updateClub(ClubDto clubDto) {
+        String username = SecurityUtil.getSessionUser();
+        UserEntity user = userRepository.findByUsername(username);
         Club club = mapToClub(clubDto);
+        club.setCreatedBy(user);
         clubRepository.save(club);
     }
 

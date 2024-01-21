@@ -2,6 +2,7 @@ package com.example.web2023.dto;
 
 
 import com.example.web2023.model.Club;
+import com.example.web2023.model.UserEntity;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +15,13 @@ import java.util.List;
 public class ClubDto  {
 
     private Long id;
-    @NotEmpty(message = "Необходимо указать название клуба.")
+    @NotEmpty(message = "Club title should not be empty")
     private String title;
-    @NotEmpty(message = "Ссылка на фото не должна быть пустой")
+    @NotEmpty(message = "Photo link should not be empty")
     private String photoUrl;
-    @NotEmpty(message = "Содержимое не должно быть пустым.")
+    @NotEmpty(message = "Content should not be empty")
     private String content;
+    private UserEntity createdBy;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private List<EventDto> events;
