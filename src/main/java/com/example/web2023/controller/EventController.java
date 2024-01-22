@@ -2,7 +2,11 @@ package com.example.web2023.controller;
 
 import com.example.web2023.dto.EventDto;
 import com.example.web2023.model.Event;
+import com.example.web2023.model.UserEntity;
+import com.example.web2023.security.SecurityUtil;
+import com.example.web2023.service.ClubService;
 import com.example.web2023.service.EventService;
+import com.example.web2023.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,38 +23,51 @@ import java.util.List;
 public class EventController {
 
     private EventService eventService;
+    private UserService userService;
+    private ClubService clubService;
 
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, UserService userService) {
+        this.userService = userService;
         this.eventService = eventService;
     }
 
     @GetMapping("/events")
     public String eventList(Model model) {
+        UserEntity user = new UserEntity();
         List<EventDto> events = eventService.findAllEvents();
-        model.addAttribute("events",events);
+        String username = SecurityUtil.getSessionUser();
+        if(username != null) {
+            user = userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("events", events);
         return "events-list";
     }
 
     @GetMapping("/events/{eventId}")
     public String viewEvent(@PathVariable("eventId")Long eventId, Model model) {
+        UserEntity user = new UserEntity();
         EventDto eventDto = eventService.findByEventId(eventId);
-
-//        model.addAttribute("club", eventDto.getClub());
-         model.addAttribute("event", eventDto);
+        String username = SecurityUtil.getSessionUser();
+        if(username != null) {
+            user = userService.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("club", eventDto.getClub());
+        model.addAttribute("user", user);
+        model.addAttribute("event", eventDto);
         return "events-detail";
     }
 
-    @GetMapping("/events/{eventId}/new")
-    public String createEventForm(@PathVariable("eventId") Long eventId, Model model) {
-//        Event event = new Event();
-//        model.addAttribute("clubId", clubId);
-        EventDto event = eventService.findByEventId(eventId);
+    @GetMapping("/events/{clubId}/new")
+    public String createEventForm(@PathVariable("clubId") Long clubId, Model model) {
+        Event event = new Event();
+        model.addAttribute("clubId", clubId);
         model.addAttribute("event", event);
         return "events-create";
     }
-
-
 
     @GetMapping("/events/{eventId}/edit")
     public String editEventForm(@PathVariable("eventId") Long eventId, Model model) {
@@ -58,16 +75,15 @@ public class EventController {
         model.addAttribute("event", event);
         return "events-edit";
     }
+
     @PostMapping("/events/{clubId}")
-    public String createEvent(@PathVariable("clubId") Long clubId,
-                              @ModelAttribute("event") EventDto eventDto,
+    public String createEvent(@PathVariable("clubId") Long clubId, @ModelAttribute("event") EventDto eventDto,
                               BindingResult result,
                               Model model) {
         if(result.hasErrors()) {
             model.addAttribute("event", eventDto);
             return "clubs-create";
         }
-
         eventService.createEvent(clubId, eventDto);
         return "redirect:/clubs/" + clubId;
     }
@@ -84,7 +100,7 @@ public class EventController {
         event.setId(eventId);
         event.setClub(eventDto.getClub());
         eventService.updateEvent(event);
-        return "redirect:/clubs";
+        return "redirect:/events";
     }
 
     @GetMapping("/events/{eventId}/delete")

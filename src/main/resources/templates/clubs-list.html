@@ -15,39 +15,9 @@
                 You are registered successfully!
             </div>
             <div class="text-center mb-5">
-                <h1 class="fw-bolder">Runner Near You</h1>
-                <p class="lead fw-normal text-muted mb-0">Runners found in your area</p>
+                <h1 class="fw-bolder">Find Running Clubs</h1>
+                <p class="lead fw-normal text-muted mb-0">Groups of passionate near you</p>
             </div>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container px-5">
-                    <a class="navbar-brand" href="index.html">RunGroop</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="about.html">Find Clubs</a></li>
-                            <li class="nav-item"><a class="nav-link" href="contact.html">Find Events</a></li>
-                            <li class="nav-item"><a class="nav-link" href="pricing.html">Directory</a></li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                    <li><a class="dropdown-item" th:href="@{clubs/new}">Create Running New</a></li>
-                                    <li><a class="dropdown-item" href="blog-home.html">Signin</a></li>
-                                    <li><a class="dropdown-item" href="blog-home.html">Register</a></li>
-                                    <li><a class="dropdown-item" href="blog-post.html">Logout</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Portfolio</a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                                    <li><a class="dropdown-item" href="portfolio-overview.html">Portfolio Overview</a></li>
-                                    <li><a class="dropdown-item" href="portfolio-item.html">Portfolio Item</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
             <div class="row gx-5">
                 <div>
                     <form th:action="@{/clubs/search}" class="form-inline my-2 my-lg-0 mb-3">
@@ -56,11 +26,13 @@
                 </div>
                 <div th:each="club :${clubs}" class="col-lg-6 mb-2">
                     <div class="position-relative mb-3">
-                        <img class="img-fluid rounded-3 mb-3" th:src="${club.photoUrl}" alt="..." /><br>
+                        <img class="img-fluid rounded-3 mb-3" th:src="${club.photoUrl}" alt="..." />
                         <a th:text="${club.title}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
                     </div>
                     <a class="btn btn-primary" th:href="@{/clubs/{clubId}(clubId=${club.id})}">View</a>
-                    <a class="btn btn-primary" th:href="@{/clubs/{clubId}/edit(clubId=${club.id})}">Edit</a>
+                    <div th:if="${user.id} == ${club.createdBy.id}">
+                        <a class="btn btn-primary" th:href="@{/clubs/{clubId}/edit(clubId=${club.id})}">Edit</a>
+                    </div>
                 </div>
             </div>
         </div>
